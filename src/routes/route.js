@@ -103,5 +103,44 @@ router.get("/films/:filmId", function(req, res){
        res.send("The film id doesn't match any movie")
 })
 
+
+router.get("/missing-number", function(req, res){
+   let arr= [1,2,3,5,6,7]
+   let n = arr[arr.length-1]
+   let sum =n*(n+1)/2;
+   let sum1 =arr.reduce((a,b)=>a+b); 
+   let missingNumber =sum-sum1;
+    res.send("missing number is "+missingNumber)
+})
+
+// router.get("/missing-number2", function(req, res){
+// let arr2 = [33, 34, 35, 37, 38]
+// let missingNumber2
+// ///LOGIC WILL GO HERE 
+// let sum2  =  (arr2.length+1)*(arr2[0] + (arr2[arr2.length - 1]))/2       /// n * (first + last) / 2
+// let sumArray2 = 0
+// for(let j = 0; i < arr2.length; j++) {
+// sumArray2 = sumArray2 + arr2[j]
+// }
+// missingNumber2 = sum2 - sumArray2
+//    res.send("missing number is "+ missingNumber2)
+// });
+app.get("/sol2", function (req, res) {
+    //logic : sum of n consecutive numbers is [ n * (first + last) / 2  ]..so get sum of all numbers in array. now take sum of n consecutive numbers.. n would be length+1 as 1 number is missing
+    let arr = [33, 34, 35, 37, 38]
+    let length=arr.length
+    let currentArrTotal = 0;
+    for (let x in arr) {
+        currentArrTotal = currentArrTotal + arr[x]
+    }
+    let firstDigit=arr[0]
+    let lastDigit = arr.pop()
+    let consecutiveNo =(length+1)* (firstDigit+lastDigit)  / 2
+    let missingNo = consecutiveNo - currentArrTotal
+
+ res.send({ data: missingNo });
+});
+
+
 module.exports = router;
 // adding this comment for no reason

@@ -125,21 +125,21 @@ router.get("/missing-number", function(req, res){
 // missingNumber2 = sum2 - sumArray2
 //    res.send("missing number is "+ missingNumber2)
 // });
-app.get("/sol2", function (req, res) {
-    //logic : sum of n consecutive numbers is [ n * (first + last) / 2  ]..so get sum of all numbers in array. now take sum of n consecutive numbers.. n would be length+1 as 1 number is missing
-    let arr = [33, 34, 35, 37, 38]
-    let length=arr.length
-    let currentArrTotal = 0;
-    for (let x in arr) {
-        currentArrTotal = currentArrTotal + arr[x]
-    }
-    let firstDigit=arr[0]
-    let lastDigit = arr.pop()
-    let consecutiveNo =(length+1)* (firstDigit+lastDigit)  / 2
-    let missingNo = consecutiveNo - currentArrTotal
+// app.get("/sol2", function (req, res) {
+//     //logic : sum of n consecutive numbers is [ n * (first + last) / 2  ]..so get sum of all numbers in array. now take sum of n consecutive numbers.. n would be length+1 as 1 number is missing
+//     let arr = [33, 34, 35, 37, 38]
+//     let length=arr.length
+//     let currentArrTotal = 0;
+//     for (let x in arr) {
+//         currentArrTotal = currentArrTotal + arr[x]
+//     }
+//     let firstDigit=arr[0]
+//     let lastDigit = arr.pop()
+//     let consecutiveNo =(length+1)* (firstDigit+lastDigit)  / 2
+//     let missingNo = consecutiveNo - currentArrTotal
 
- res.send({ data: missingNo });
-});
+//  res.send({ data: missingNo });
+// });
 
 
 module.exports = router;

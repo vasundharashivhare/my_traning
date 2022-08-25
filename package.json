@@ -1,15 +1,10 @@
 {
   "name": "src",
   "version": "1.0.0",
-<<<<<<< HEAD
-  "description": "Backend cohort for Plutonium(Jul-Nov)",
-=======
   "description": "Backend cohort",
->>>>>>> 9e4c16d4ea1ae2e8bdde64eac93caf8467fd54bc
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +15,6 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "mongoose": "^6.2.3",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.15"
   }
 }

@@ -28,7 +28,7 @@ const createUser= async function (req, res) {
 
     //Set an attribute in request object
     req.anything = "everything"
-    
+    console.log(req.anything)
     
     console.log("Request headers after modificatiom",req.headers)
     

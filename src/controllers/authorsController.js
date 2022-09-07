@@ -1,35 +1,49 @@
 const { request } = require("express")
-const { exists } = require("../model/authorsModel")
+
 const authorModel = require("../model/authorsModel")
-const { isValidMail, ischarCode } = require("../validator/validator")
+const { isValidMail, isValid, isValidName, isValidRequestBody } = require("../validator/validator")
 
 
-const creatAuthor = async function (req, res) {
+const createAuthor = async function (req, res) {
     try {
-        let object = req.body
-        let objectlength = Object.keys(object)
-        if (objectlength == 0) {
-            return res.status(400).send({ msg: "Body is Mandatory" })
-        }
-        if (!object.fname || !object.lname || !object.title || !object.email || !object.password) {
-            return res.status(400).send({ status: false, msg: "Body missing a mandatory fild" })
-        }
-        
-        if(object.title!='Mr'&&object.title!='Mrs'&&object.title!='Miss') return res.status(406).send({status:false,msg:"title can contain only 'Mr', 'Mrs', 'Miss'-"})
-
-        if (!isValidMail(object.email)) return res.send({ msg: "mail id is not valid" })
-
-        let emailId = await authorModel.findOne({ email: object.email }).select({ email: 1, _id: 0 })
-        if (emailId) return res.status(400).send({ msg: "This Author Allrady exists" })
-        let createAuthor = await authorModel.create(object)
-        res.status(201).send({ msg: createAuthor })
+      let data = req.body
+      // validation for empty for body.
+      if (!isValidRequestBody(data)) return res.status(400).send({ status: false, message: "Plz enter some data." })
+    // validation for empty string.
+      if (!isValid(data.fname)) return res.status(400).send({ status: false,msg: "fname is  requred" })
+    // validation for valid string.
+      if (!isValidName.test(data.fname)) return res.status(400).send({ status: false, msg: "Enter a valid first name" })
+    // validation for lname
+  
+    if (!isValid(data.lname)) return res.status(400).send({ status: false,msg: "lname is requred" })
+    // validation for valid string.
+      if (!isValidName.test(data.lname)) return res.status(400).send({ status: false, msg: "Enter a valid first name" })
+  
+  
+    // validation for id
+      if (!isValid(data.email)) return res.status(400).send({ status: false, msg: "mail id is required" })
+    // validation for unic id.
+      let uniqueEmail = await authorModel.findOne({ email: data.email })
+      if (uniqueEmail) {
+        return res.status(400).send({ status: false, msg: "Email Already Exists." })
+      }
+       // validation for valid email id
+      if (!isValidMail.test(data.email)) return res.status(400).send({status: false, msg: "email id is not valid" })
+         // validation for title
+      if (!isValid(data.title)) return res.send({ status: false, msg: "Title is req" })
+      if (!(["Mr", "Mrs", "Miss"].includes(data.title))) return res.status(400).send({ status: false, msg: "Enter a valid title " })
+      
+    // validation for password
+      if (!isValid(data.password)) return res.status(400).send({ status: false, msg: "password is required" })
+      let savedData = await authorModel.create(data)
+      res.status(201).send({ status: true, message: "Author profile is created successfully.", data: savedData })
+  
     }
-    catch (err) {
-        res.status(500).send({ msg: err })
+    catch (error) {
+      res.status(500).send({ msg: error.message });
     }
+  };
+  
 
-}
 
-
-
-module.exports.creatAuthor = creatAuthor
+module.exports.createAuthor = createAuthor

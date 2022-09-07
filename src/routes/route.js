@@ -11,6 +11,12 @@ router.get("/test-me",function(req,res){
 router.post("/authors",authorController.creatAuthor)
 router.post("/blogs",blogController.createBlog)
 router.get("/getblogs",blogController.getblog)
+router.put("/blogs/:blogId",blogController.updateBlog)
+router.delete("/blogs/:blogId",blogController.deleteBlog)
+router.delete("/blogby",blogController.deleteBlogByQuery)
+//router.delete("/undelete",blogController. undeleteall)
 
 
 module.exports = router;   
+
+//mongoose.isValidObjectId(id)

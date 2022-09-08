@@ -78,7 +78,16 @@ const updateBlog = async function (req, res) {
 
    if(!mongoose.isValidObjectId(blogId)) return res.status(400).send({status:false,msg:"Type of BlogId must be ObjectId "})
     let foundDoc = await blogModel.findOne({_id:blogId,isDeleted:false});
-      if(!foundDoc) return res.status(404).send({status: false, msg: "Blog is not found",});
+    if(!foundDoc) return res.status(404).send({status: false, msg: "Blog is not found",});
+
+    //-----------authorization start-----------//
+
+    let  userid=foundDoc["authorId"]
+    let authorized_id = req.decodedToken["authorId"]
+    if (userid != authorized_id) res.status(403).send({status:false,msg:"user is not authorized for this operation"})
+
+    //------------------------authorization end------------//
+      
       let data=req.body
       if (!isValidRequestBody(data)) return res.status(400).send({ status: false, message: "Body can't be empty it must contain some data." })
     let tags = data.tags;
@@ -121,6 +130,14 @@ const updateBlog = async function (req, res) {
     if(!mongoose.isValidObjectId(blogId)) return res.status(400).send({status:false,msg:"Type of BlogId is must be ObjectId "})
     let blogs= await blogModel.findById(blogId);
       if(!blogs) return res.status(404).send({status: false, msg: "Blog is not found",});
+
+      //-----------authorization start-----------//
+
+    let  userid=blogs["authorId"]
+    let authorized_id = req.decodedToken["authorId"]
+    if (userid != authorized_id) res.status(403).send({status:false,msg:"user is not authorized for this operation"})
+
+    //------------------------authorization end------------//
     
       if(blogs.isDeleted == true){
       res.status (400).send({status:false,msg:'this blog  is already deleted.'} )
@@ -139,24 +156,31 @@ const updateBlog = async function (req, res) {
       
       let { _id,title,authorId, category, tags, subcategory} = req.query;
       let query = {};
-      if (_id != null||undefined) query._id = _id;
-      if (title != null||undefined) query.title = title;
-      if (authorId != null||undefined) query.authorId = authorId;
-      if (category != null||undefined) query.category = category;
-      if (tags != null||undefined) query.tags = tags;
-      if (subcategory != null||undefined) query.subcategory = subcategory;
+      if (_id != null) query._id = _id;
+      if (title != null) query.title = title;
+      if (authorId != null) query.authorId = authorId;
+      if (category != null) query.category = category;
+      if (tags != null) query.tags = tags;
+      if (subcategory != null) query.subcategory = subcategory;
       let findData = await blogModel.findOne(query);
-      if (findData.isDeleted == true)  return res.status(404).send({ status: false, msg: "blog is not found" });
+      if(!findData) return res.status(404).send({status: false, msg: "Blog is not found",});
       
+      //-----------authorization start-----------//
+
+    let  userid=findData["authorId"]
+    let authorized_id = req.decodedToken["authorId"]
+    if (userid != authorized_id) return res.status(403).send({status:false,msg:"user is not authorized for this operation"})
+
+    //------------------------authorization end------------//
+
+    if (findData.isDeleted == true)  return res.status(404).send({ status: false, msg: "blog is alrady deleted" });
   
-      let updateData = await blogModel.findOneAndUpdate(
+      let deleteData = await blogModel.findOneAndUpdate(
         query,
         { $set: { isDeleted: true } },
         { new: true }
       );
-      return res
-        .status(200)
-        .send({ status: true, msg: "blog is deleted successfully" });
+      return res.status(200).send({ status: true, msg: "blog is deleted successfully" });
     } catch (error) {
       return res.status(500).send({ status: false, msg: error.message });
     }

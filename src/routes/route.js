@@ -27,11 +27,11 @@ router.put("/blogs/:blogId",middleWare.authenticate,blogController.updateBlog)
 
 //---------------API for Delete Blog---------------------//
 router.delete("/blogs/:blogId",middleWare.authenticate,blogController.deleteBlog)
-router.delete("/blogby",middleWare.authenticate,blogController.deleteBlogByQuery)
+router.delete("/delete",middleWare.authenticate,blogController.deleteBlogByQuery)
 
 
 //......................................FOR restore  all data-------//
-//router.delete("/undelete",blogController. undeleteall)
+//router.delete("/undelete",blogController.undeleteall)
 
 
 module.exports = router;   

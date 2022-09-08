@@ -1,4 +1,5 @@
 const { request } = require("express")
+const jwt=require("jsonwebtoken")
 
 const authorModel = require("../model/authorsModel")
 const { isValidMail, isValid, isValidName, isValidRequestBody } = require("../validator/validator")
@@ -43,7 +44,39 @@ const createAuthor = async function (req, res) {
       res.status(500).send({ msg: error.message });
     }
   };
-  
 
-
+  //-------------Login-------------------------------------------------//
+  const loginAuthor = async function(req,res){
+ 
+    try {
+    if (!isValidRequestBody(req.body)) return res.status(400).send({ status: false, message: "request body can't be empty enter some data." })
+     let email = req.body.email
+     if (!isValidMail.test(email)) return res.status(400).send({status: false, msg: "email required" })
+     
+     let password = req.body.password
+     if (!isValid(password)) return res.status(400).send({ status: false, msg: "password is required" })
+   
+     let verifyAuthor = await authorModel.findOne({email :  email , password : password })
+     if(!verifyAuthor){
+       return res.status(400).send({status:false , msg : "email or password is incorrect"})
+     }
+   
+     let token = jwt.sign(
+         { 
+           authorId : verifyAuthor._id.toString(),
+           project : 1,
+           group : 56,
+           batch : "Plutonium"
+         },
+         "thou-hath-the-poer"
+     );
+     res.setHeader("x-api-key",token)
+     res.status(200).send({status:true , msg : "You are successFully LogedIn",token:token}) 
+   }
+   catch(error){
+     res.status(500).send({status : false , msg : error.message})
+   }
+   };
+   
+   module.exports.loginAuthor = loginAuthor
 module.exports.createAuthor = createAuthor

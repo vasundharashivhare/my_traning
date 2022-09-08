@@ -18,12 +18,12 @@
   },
   "homepage": "https://github.com/sameerpanigrahy/group56_project1#readme",
   "dependencies": {
-    "express": "^4.18.1",
-    "mongoose": "^6.5.4",
-    "nodemon": "^2.0.19",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "mongoose": "^6.5.4",
+    "nodemon": "^2.0.19"
   }
 }

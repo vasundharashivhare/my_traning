@@ -43,10 +43,11 @@ const createBlog = async function (req, res) {
 const getblog=async function(req,res){
     try{
         if (Object.keys(req.query).length === 0){
+          
          let totalBlogs = await blogModel.find({ isDeleted: false,isPublished: true,});
-    if (totalBlogs.length === 0)  return res.status(404).send({ status: false, msg: "None of the Blogs are Published" });
+          if (totalBlogs.length === 0)  return res.status(404).send({ status: false, msg: "Blogs don't exist" });
               
-           return res.status(200).send({ status: true, msg: totalBlogs });
+           return res.status(200).send({ status: true, data: totalBlogs });
             }
             
     
@@ -63,7 +64,7 @@ const getblog=async function(req,res){
       let finalFilter = await blogModel.find(query);
     if(finalFilter.length==0) return res.status(404).send({status:true,msg:"Request is Not found"})
       return res.status(200).send({ status: true, msg: finalFilter });
-    
+
   } catch (error) {
     res.status(500).send({ status: false, msg: "server error" });
   }
@@ -132,74 +133,24 @@ const updateBlog = async function (req, res) {
 
   const deleteBlogByQuery = async function (req, res) {
     try {
+      
       let data = req.query;
-      console.log(".........", data);
-      let blogObjId = req.query._id;
-      let authorObjId = req.query.authorId;
+      if (Object.keys(data).length === 0) return res.status.send({status:true,msg:"query params can't be empty==>>>choose what you want to delete"})
+      
+      let { _id,title,authorId, category, tags, subcategory} = req.query;
+      let query = {};
+      if (_id != null||undefined) query._id = _id;
+      if (title != null||undefined) query.title = title;
+      if (authorId != null||undefined) query.authorId = authorId;
+      if (category != null||undefined) query.category = category;
+      if (tags != null||undefined) query.tags = tags;
+      if (subcategory != null||undefined) query.subcategory = subcategory;
+      let findData = await blogModel.findOne(query);
+      if (findData.isDeleted == true)  return res.status(404).send({ status: false, msg: "blog is not found" });
       
   
-      let findData = await blogsModel.findOne(data);
-      console.log(".......", findData);
-  
-      if (Object.keys(data).length === 0) {
-        return res
-          .status(400)
-          .send({ status: false, msg: "choose what you want to delete" });
-      }
-  
-      if (blogObjId) {
-        if (findData != blogObjId) {
-          return res.send("invalid blog id");
-        }
-      }
-  
-      if (authorObjId) {
-        if (findData != authorObjId) {
-          return res.send("invalid author id");
-        }
-      }
-  
-      //combined validation for authorId and blogId====================>
-      // if ( findData === null) {
-      //   return res.status(404).send({status : false , msg : "blog does not exist"});
-      // }
-  
-  
-      // if(findData.tags != data.tags){
-      //   return res.send("enter a valid filter")
-      // }
-  
-      // if(data.subcategory){
-      // if(findData.subcategory != data.subcategory){
-      //  return res.send("enter a valid filter")
-      // }}
-  
-      // if(findData.category != data.category){
-      //   return res.send("enter a valid filter")
-      //  }
-  
-      // if (findData.isPublished != published) {
-      //   return res.send("enter a valid filter");
-      // }
-  
-      if (data.title) {
-        if (findData.title != data.title) {
-          return res.send("enter a valid filter");
-        }
-      }
-  
-      if (findData.body != data.body) {
-        return res.send("enter a valid filter");
-      }
-  
-      if (findData.isDeleted == true) {
-        return res
-          .status(404)
-          .send({ status: false, msg: "blog is already deleted" });
-      }
-  
-      let updateData = await blogsModel.findOneAndUpdate(
-        data,
+      let updateData = await blogModel.findOneAndUpdate(
+        query,
         { $set: { isDeleted: true } },
         { new: true }
       );

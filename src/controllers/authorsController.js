@@ -71,7 +71,7 @@ const createAuthor = async function (req, res) {
          "thou-hath-the-poer"
      );
      res.setHeader("x-api-key",token)
-     res.status(200).send({status:true , msg : "You are successFully LogedIn",token:token}) 
+     res.status(200).send({status:true , msg : "logged in successfully",token:token}) 
    }
    catch(error){
      res.status(500).send({status : false , msg : error.message})

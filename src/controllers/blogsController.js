@@ -200,59 +200,13 @@ const deleteBlog = async function (req, res) {
   }
 };
 
-// const deleteBlogByQuery = async function (req, res) {
-//   try {
 
-//     let data = req.query;
-//     if (Object.keys(data).length === 0) return res.status(400).send({ status: true, msg: "query params can't be empty==>>>choose what you want to delete" })
-
-//     let { _id, title, authorId, category, tags, subcategory } = req.query;
-
-//     let query = {};
-//     if (_id != null){
-//       if (!mongoose.isValidObjectId(_id)) return res.status(400).send({ status: false, msg: "Type of BlogId must be ObjectId " })
-//       query._id = _id;
-//     }
-//     if (title != null) query.title = title;
-//     if (authorId != null) query.authorId = authorId;
-//     if (category != null) query.category = category;
-//     if (tags != null) query.tags = tags;
-//     if (subcategory != null) query.subcategory = subcategory;
-//     let findData = await blogModel.findOne(query);
-//     if (!findData) return res.status(404).send({ status: false, msg: "Blog is not found", });
-
-//     //-----------authorization start-----------//
-
-//     let userid = findData["authorId"]
-//     let authorized_id = req.decodedToken["authorId"]
-//     if (userid != authorized_id) return res.status(403).send({ status: false, msg: "user is not authorized for this operation" })
-
-//     //------------------------authorization end------------//
-
-//     if (findData.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is alrady deleted" });
-
-//     let deleteData = await blogModel.findOneAndUpdate(
-//       query,
-//       { $set: { isDeleted: true } },
-//       { new: true }
-//     );
-//     return res.status(200).send({ status: true, msg: "blog is deleted successfully" });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, msg: error.message });
-//   }
-// };
-
-// const undeleteall=async function(req,res){
-//   let undelete=await blogModel.updateMany({},{isDeleted:false},{new:true})
-//   res.status(200).send({status:true,msg:"done he....:)>>:)>>:)"})
-// }
 
 const deleteBlogByQuery = async function (req, res) {
   try {
     let data = req.query;
-    console.log(".........here", data);
-    // let blogObjId = data._id;
-    // let authorObjId = data.authorId;
+   
+    
 
     if (Object.keys(data).length === 0) {
       return res
@@ -274,9 +228,7 @@ const deleteBlogByQuery = async function (req, res) {
       ],
     });
     console.log(".......", findData);
-    // let findData = await blogModel.find({ authorId: data.authorId });
-    //console.log("this is finddata===", findData);
-
+    
     if (!findData.length > 0) {
       return res
         .status(400)
@@ -300,21 +252,7 @@ const deleteBlogByQuery = async function (req, res) {
       }
     }
 
-    // if (findData.isDeleted == true) {
-    //   console.log("1234")
-    //   return res
-    //     .status(404)
-    //     .send({ status: false, msg: "blog is already deleted" });
-    // }
-
-    // let updateData = await blogModel.updateMany(
-    //   data,
-    //   { $set: { isDeleted: true } },
-    //   { new: true }
-    // );
-    // return res
-    //   .status(200)
-    //   .send({ status: true, msg: "blog is deleted successfully" });
+   
   } catch (error) {
     return res.status(500).send({ status: false, msg: error.message });
   }
@@ -325,4 +263,4 @@ module.exports.getblog = getblog;
 module.exports.updateBlog = updateBlog;
 module.exports.deleteBlog = deleteBlog;
 module.exports.deleteBlogByQuery = deleteBlogByQuery;
-//module.exports. undeleteall= undeleteall
+

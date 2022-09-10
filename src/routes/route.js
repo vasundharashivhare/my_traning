@@ -23,11 +23,11 @@ router.post("/blogs",middleWare.authenticate,blogController.createBlog)
 router.get("/getblogs",middleWare.authenticate,blogController.getblog)
 
 //---------------------API for Update  Blog------------------//
-router.put("/blogs/:blogId",middleWare.authenticate,blogController.updateBlog)
+router.put("/blogs/:blogId",middleWare.authenticate, blogController.updateBlog)
 
 //---------------API for Delete Blog---------------------//
-router.delete("/blogs/:blogId",middleWare.authenticate,blogController.deleteBlog)
-router.delete("/delete",middleWare.authenticate,blogController.deleteBlogByQuery)
+router.delete("/blogs/:blogId", middleWare.authenticate, blogController.deleteBlog)
+router.delete("/delete" , middleWare.authenticate , blogController.deleteBlogByQuery)
 
 
 //......................................FOR restore  all data-------//

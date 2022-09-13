@@ -119,14 +119,14 @@ const updateBlog = async function (req, res) {
           category: category,
           subcategory: result2,
           title: title,
-          bodyData: bodyData,
+          body: bodyData,
           $set: { isPublished: true, publishedAt: Date.now() },
         },
         { new: true }
       );
       return res
         .status(200)
-        .send({ status: true, msg: " Blog is succesfully Upadated" });
+        .send({ status: true, msg: " Blog is succesfully Upadated",data:updatedDoc });
     }
     return res.status(400).send({status:false , msg : "blog has been deleted"})
   } catch (err) {
@@ -139,7 +139,7 @@ const updateBlog = async function (req, res) {
 
 
 const deleteBlog = async function (req, res) {
-
+try{
   let blogId = req.params.blogId;
 
   if (!mongoose.isValidObjectId(blogId)) return res.status(400).send({ status: false, msg: "Type of BlogId is must be ObjectId " })
@@ -155,14 +155,19 @@ const deleteBlog = async function (req, res) {
 
   //------------------------authorization end------------//
 
-  if (blogs.isDeleted == true) {
+  if (findByblogId.isDeleted == true) {
     return res.status(400).send({ status: false, msg: 'this blog  is already deleted.' })
 
   } else {
     let updatebloge = await blogModel.findOneAndUpdate({ _id: blogId }, { isDeleted: true,deletedAt:Date.now()}, { new: true });
-    return res.send({ status: true, msg: "blog deleted successfully" });
+    return res.status(200).send({ status: true, msg: "blog deleted successfully" });
   }
+}
+catch(err){
+  return res.status(500).send({ status: true, msg:err.message });
+}
 };
+
 
 const deleteBlogByQuery = async function (req, res) {
   try {

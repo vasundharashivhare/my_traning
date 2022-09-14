@@ -1,28 +1,42 @@
-
 const internModel = require("../models/internModel")
-const { isValidMail, isValid, isValidName, isValidRequestBody } = require("../validation/validation")
+const validator = require("../validation/validation")
+const mongoose = require('mongoose')
+const collegeModel = require("../models/collegeModel")
 
-const Createintern = async function (req, res) {
+
+const createIntern = async function (req, res) {
     try {
-        let data=req.body
-        if (!isValidRequestBody(data)) return res.status(400).send({ status: false, message: "Plz enter some data." })
-        if (!isValid(data.name)) return res.status(400).send({ status: false,msg: "name is  requred" })
-        if (!isValid(data.email)) return res.status(400).send({ status: false, msg: "mail id is required" })
-        // validation for unic id.
-          let uniqueEmail = await internModel.findOne({ email: data.email })
-          if (uniqueEmail) {
-            return res.status(400).send({ status: false, msg: "Email Already Exists." })
-          }
-           // validation for valid email id
-          if (!isValidMail.test(data.email)) return res.status(400).send({status: false, msg: "email id is not valid" })
-          // validation for mobile
+        const body = req.body
+        if (Object.keys(body).length == 0) return res.status(404).send({ status: false, msg: "Please enter details of interns" })
 
-          
-        let savedData = await internModel.create(data)
-        res.status(201).send({ status: true, message: "intern is created successfully.", data: savedData })
+        let { name, email, mobile, collegeName } = body
+
+        //edge cases
+//    ===========================================================================intern=====================================
+        if (!validator.isValid) return res.status(400).send({ status: false, msg: "It is mandatory to enter intern details" })
+        if (!validator.isValidName(name)) return res.status(400).send({ status: false, msg: "please enters in alphabet format." })
+        //    ===========================================================================intern mobile=====================================
+        if (!validator.isValid) return res.status(400), send({ status: false, msg: "It is mandatory to enter mobile number." })
+        if (!validator.isValidMobile(mobile)) return res.status(400).send({ status: false, msg: "Please enter valid mobile number." })
+        let doc= await internModel.findOne({ mobile: mobile,isDeleted:false })
+        if (doc) return res.status(400).send({ status: false, msg: "mobile is already registered." })
+        //    ===========================================================================intern email=====================================
+        if (!validator.isValid) return res.status(400).send({ status: false, msg: "It is mandatory to enter emailId." })
+        if (!validator.isValidEmail(email)) return res.status(400).send({ status: false, msg: "Please enter valid emailId." })
+        doc = await internModel.findOne({ email: email,isDeleted:false })
+        if (doc) return res.status(400).send({ status: false, msg: "emailId is already registered." })
+//    ===========================================================================intern college id=====================================
+        if (!validator.isValid) return res.status(400).send({ status: false, msg: "collegeName must be required." })
+        let college = await collegeModel.findById({ _id:collegeId})
+        if (!college) return res.status(400).send({ status: false, msg: "college not found..Please try with another college Name." })
+       
+        
+        let result = await internModel.create(body)
+        return res.status(201).send({ status: true, data: result })
     }
-    catch (error) {
-      res.status(500).send({ msg: error.message });
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err.message })
     }
-  };
-  module.exports.Createintern=Createintern;
+}
+
+module.exports.createIntern = createIntern

@@ -9,8 +9,8 @@ router.get("/test-me",function(req,res){
     res.status(200).send({msg:"All ok"})
 })
 //-------------------------------API for Create Author-----------------------//
-router.post("/functionup/colleges",collegeController.Createcollege)
-router.post("/functionup/interns",internController.Createintern)
+router.post("/functionup/colleges",collegeController.createCollege)
+router.post("/functionup/interns",internController.createIntern)
 
 
 

@@ -1,10 +1,6 @@
-// const express = require('express');
-// const router = express.Router();
-const collegeModel = require("../models/collegeModels")
-// const internController=require("../controllers/internController")
 
-// const { request } = require("express")
-// const collegeModel = require("../model/collegeModel")
+const collegeModel = require("../models/collegeModels")
+
 const Createcollege = async function (req, res) {
     try {
         let data=req.body

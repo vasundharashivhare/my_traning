@@ -6,6 +6,12 @@ const isValid =function(value)
     if (typeof (value)==='undefined'||value==null)return false
     return true;
     }
+
+    const isValidRequestBody = (value) => {
+        return Object.keys(value).length > 0
+    }
+
+
     const isValidShortName=function(name){
         if(/^[a-z]{2,10}$/i.test(name)){
             return true
@@ -13,13 +19,13 @@ const isValid =function(value)
     }
 
     const isValidFullName=function(fullname){
-        if(/^[a-z ,&-]{2,200}$/i.test(fullname)){
+        if(/^[a-zA-Z]+$/i.test(fullname)){
             return true
         }
     }
     
     const isValidName=function(name){
-        if(/^[a-z ]{2,50}$/i.test(name)){
+        if(/^[a-zA-Z ]*$/i.test(name)){
             return true
         }
     }
@@ -30,7 +36,7 @@ const isValid =function(value)
     
    
     const isValidEmail = function (mail) {
-        if (/^[a-z0-9_]{3,}@[a-z]{3,}.[com]{3}$/.test(mail)) {
+        if (/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(mail)) {
         return true;
         }
     }
@@ -39,7 +45,12 @@ const isValid =function(value)
             return true
         }
     }
+    const isValidLink=function(link){
+        if(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%.\+#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%\+.#?&//=]*)/i.test(link)){
+            return true
+        }
+    }
   
     
     
-      module.exports={isValid,isValidEmail,isValidId,isValidMobile,isValidName,isValidShortName,isValidFullName}
+      module.exports={isValid,isValidEmail,isValidId,isValidMobile,isValidName,isValidShortName,isValidFullName,isValidLink,isValidRequestBody}

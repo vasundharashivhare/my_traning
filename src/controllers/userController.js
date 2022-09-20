@@ -3,7 +3,9 @@ const jwt=require('jsonwebtoken')
 
 const createUser = async function (req, res) {
     try {
+      
         let requestBody = req.body
+      
         if (!requestBody) return res.status(400).send({ status: false, message: 'user data is required in body' })
         let userData = await userModel.create(requestBody)
         res.status(201).send({ status: true, message: 'Success', data: userData })
@@ -15,6 +17,7 @@ const createUser = async function (req, res) {
 
 const login = async function (req, res) {
     try {
+        
         let requestBody = req.body
         if (!requestBody) return res.status(400).send({ status: false, message: 'user data is required in body' })
         let { email, password } = requestBody

@@ -28,21 +28,21 @@ const createCollege = async function (req, res) {
         if (!validator.isValid(data.fullName)) {
             return res.status(400).send({ status: false, message: "fullName can contain only letters,space,comma,'&',and '-' " })
         }
-      //   let duplicateFullName = await collegeModel.findOne({ fullName: fullName })
-      //  if (duplicateFullName ) {
-      //  return res.status(400).send({ status: false, msg: "FullName  already exist" })
-      //   }
+        let duplicateFullName = await collegeModel.findOne({ fullName: fullName })
+       if (duplicateFullName ) {
+       return res.status(400).send({ status: false, msg: "FullName  already exist" })
+        }
         if (!data.logoLink) {
             return res.status(400).send({ status: false, message: "Please provide logoLink of the college" })
         }
         
-      //  if(!validator.isValidLink(data.logoLink)) {
-      //    return res.status(400).send({ status: false, message: "LogoLink is Invalid" })
-      //   }
-    //     let duplicatelink= await collegeModel.findOne({logoLink:logoLink})
-    //     if (duplicatelink){
-    //   return res.status(400).send({ status: false, msg: "logolink  already exist" })
-    // }
+       if(!validator.isValidLink(data.logoLink)) {
+         return res.status(400).send({ status: false, message: "LogoLink is Invalid" })
+        }
+        let duplicatelink= await collegeModel.findOne({logoLink:logoLink})
+        if (duplicatelink){
+      return res.status(400).send({ status: false, msg: "logolink  already exist" })
+    }
        data.name=name.toLowerCase() 
         let savedData = await collegeModel.create(data)
         res.status(201).send({ status: true, message: "college is created successfully.", data: savedData })

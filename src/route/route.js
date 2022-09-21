@@ -7,8 +7,11 @@ const userController=require('../controllers/userController')
 
 router.post('/register',userController.createUser)
 router.post('/login',userController.login)
- router.post('/books',bookController.createBook)
- router.get('/books',bookController.getBook)
+router.post('/books',bookController.createBook)
+router.get('/books',bookController.getBook)
+router.get('/books/:bookId',bookController.getBookById)
+// router.put('/books/:bookId',bookController.putBookById)
+
 // router.post('/register',)
 
 

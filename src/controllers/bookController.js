@@ -1,4 +1,5 @@
 const bookModel = require('../models/booksModel')
+const reviewModel = require('../models/reviewModel')
 
 const createBook = async function (req, res) {
     let requestBody = req.body
@@ -24,7 +25,40 @@ const getBook = async function (req, res) {
 
         res.status(200).send({ status: true, message: 'Success', data: requiredData })
     }
-    catch {
+    catch (err) {
+        res.status(500).send({ status: false, error: err.message })
     }
 }
-module.exports = { createBook, getBook } 
+
+const getBookById = async function (req, res) {
+    try {
+        let bookId = req.params.bookId
+        let bookData = await bookModel.findById(bookId).select({__v:0}).lean()
+
+
+        let reviewsData = await reviewModel.find({bookId:bookData._id})
+        bookData.reviewsData = reviewsData
+        
+        // let data=Object.create(bookData)
+        //bookData.push(reviewsData)
+        
+        res.status(200).send({ status: true, message: 'Success', data: bookData})
+    }
+    catch (err) {
+        res.status(500).send({ status: false, error: err.message })
+    }
+}
+
+// const putBookById=async function(req,res){
+//     try{
+//         let bookId = req.params.bookId
+//         let requestBody=req.body
+//         let updatebookData=await bookModel.findByIdAndUpdate(bookId,)
+        
+//     }
+//     catch (err) {
+//         res.status(500).send({ status: false, error: err.message })
+//     }
+// }
+
+module.exports = { createBook, getBook, getBookById } 

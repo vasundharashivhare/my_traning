@@ -8,6 +8,7 @@ const userController=require('../controllers/userController')
 router.post('/register',userController.createUser)
 router.post('/login',userController.login)
  router.post('/books',bookController.createBook)
+ router.get('/books',bookController.getBook)
 // router.post('/register',)
 
 

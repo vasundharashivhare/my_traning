@@ -10,10 +10,8 @@ router.post('/login',userController.login)
 router.post('/books',bookController.createBook)
 router.get('/books',bookController.getBook)
 router.get('/books/:bookId',bookController.getBookById)
-// router.put('/books/:bookId',bookController.putBookById)
-
-// router.post('/register',)
-
+router.put('/books/:bookId',Middleware.authentication, Middleware.authorisation,bookController.updateBook)
+router.delete('/books/:bookId',Middleware.authentication, Middleware.authorisation, bookController.deleteBook)
 
 
 module.exports=router

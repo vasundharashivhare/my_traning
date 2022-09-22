@@ -38,21 +38,17 @@ const login = async function (req, res) {
         let token = jwt.sign({
             userId: userData._id.toString(),
             iat: Math.floor(Date.now() / 1000),
-            exp: Math.floor(Date.now() / 1000) + 7600
+            expln:"200m"
         },
             "secretkey"
         );
 
         res.setHeader('x-api-key', token)
-
-        res.status(201).send({ status: true, message: 'Success', data: token })
+        return res.status(201).send({ status: true, message: 'Success', data: token })
     }
     catch (err) {
-        res.status(500).send({ status: false, error: err.message })
+        return res.status(500).send({ status: false, error: err.message })
     }
 }
 
 module.exports = { createUser, login }
-
-
-// Math.floor(Date.now() / 1000) - 30

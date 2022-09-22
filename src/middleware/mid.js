@@ -1,20 +1,20 @@
-const userModel = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 const booksModel = require('../models/booksModel')
 
 let authentication = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']
-        if (!token) res.status(401).send({ status: false, message: "enter valid token" })
+        if (!token) res.status(401).send({ status: false, message: "token must be present" })
 
         jwt.verify(token, "secretkey", (err, user) => {
-            if (err) { return res.status(403).send("failed authentication") }
+            if (err) { return res.status(403).send("invalid token") }
             req.userLoggedIn = user
         })
+        console.log(req.userLoggedIn)
         next()
     }
     catch (err) {
-        return res.status(500).send({ satus: false, message: err.message })
+        return res.status(500).send({ status: false, message: err.message })
     }
 }
 

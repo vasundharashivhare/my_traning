@@ -13,7 +13,6 @@ const getBook = async function (req, res) {
     try {
         let queries = req.query
         let { userId, category, subcategory } = queries
-        if (Object.keys(queries).length == 0) return res.status(400).send({ status: false, message: 'book data is required to find' })
 
         let filter = { isDeleted: false }//{s,c,id}
 
@@ -81,7 +80,7 @@ const deleteBook = async function (req, res) {
         let bookId = req.params.bookId
         if (!(await bookModel.findById(bookId))) return res.status(404).send({ status: false, message: "enter correct bookid" })
 
-        let bookData = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { isDeleted: true }, { new: true })
+        let bookData = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { isDeleted: true,isDeletedAt:Date.now() }, { new: true })
         if (!bookData) return res.status(404).send({ status: false, message: "Already delelted" })
 
         return res.status(200).send({ status: true, message: 'Success', data: bookData })

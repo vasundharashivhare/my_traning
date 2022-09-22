@@ -4,15 +4,15 @@ const bookModel = require('../models/booksModel')
 const createReview = async function (req, res) {
     try {
         let bookId = req.params.bookId
-       
+
         let bookData = await bookModel.findById(bookId).select({ __v: 0 })
         if (!bookData) return res.status(400).send({ status: false, message: 'id not present in bookdata' })
-        
+
         let requestBody = req.body
         if (!requestBody) return res.status(400).send({ status: false, message: 'review data is required in body' })
         requestBody.bookId = bookId
         requestBody.reviewedAt = new Date()
-       
+
         let reviewData = await reviewModel.create(requestBody)
         if (reviewData) { var updateData = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $inc: { reviews: 1 } }, { new: true }).select({ __v: 0 }).lean() }
 
@@ -26,7 +26,53 @@ const createReview = async function (req, res) {
     }
 }
 
-//const updateReview=async function(req,res){
+
+const updatereview = async function (req, res) {
+    try {
+        let bookId = req.params.bookId
+        let reviewId = req.params.reviewId
+        let queries = req.body
+        let { reviewedBy, rating, review } = queries
+        let filter = {}
+
+        if (reviewedBy) filter.reviewedBy = reviewedBy
+        if (rating) filter.rating = rating
+        if (review) filter.review = review
+
+        if (bookId) { var checkId = await bookModel.findOne({_id:bookId, isDeleted:false}).lean() }
+        if (!bookId) return res.status(404).send({ status: false, message: "book Data not found" })
+        if (checkId) { var idOfReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, filter, { new: true }) }
+        if (!idOfReview) return res.status(404).send({ status: false, message: " Data not found" })
+
+        const reviews = await reviewModel.find({ bookId: bookId, isDeleted: false })
+
+        checkId.reviewsData = reviews
+
+        return res.status(201).send({ status: true, message: "Updated Successfully", data: checkId })
+    }
+    catch (err) {
+        return res.status(500).send({ err: err.message })
+    }
+}
 
 
-module.exports = { createReview }
+const deleteReview=async function(req,res){
+    try{
+        let bookId = req.params.bookId
+        let reviewId = req.params.reviewId
+      
+        if (bookId) { var checkId = await bookModel.findOne({_id:bookId, isDeleted:false}) }
+        if (!bookId) return res.status(404).send({ status: false, message: "book Data not found" })
+        if (checkId) { var idOfReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, {isDeleted:true, }, { new: true }) }
+        if (!idOfReview) return res.status(404).send({ status: false, message: " Data not found" })
+        if (idOfReview) { var reducedReviews = await bookModel.findOneAndUpdate({_id:bookId}, {$inc:{reviews:-1}}, {new:true}) }
+     
+
+        return res.status(200).send({ status: true, message: "Deleted Successfully"})
+ 
+    }catch(err){
+        return res.status(500).send({ err: err.message })
+    }}
+    
+
+    module.exports = { createReview, updatereview, deleteReview }

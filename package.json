@@ -1,17 +1,17 @@
 {
-  "name": "booksmanagementgroup66",
+  "name": "booksanagementgroup66",
   "version": "1.0.0",
-  "description": "",
+  "description": "This Project is About the data of books and reviews of users.Author Can perform CRUD operation and users can add reviews.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run":"nodemon src/index.js"
+    "start":"nodemon src/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/prince9871/booksManagementGroup66.git"
   },
-  "author": "",
+  "author": "Akshay,Prince,Prital,Vishal",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/prince9871/booksManagementGroup66/issues"

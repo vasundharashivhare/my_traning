@@ -6,7 +6,7 @@ let authentication = async function (req, res, next) {
         let token = req.headers['x-api-key']
         if (!token) res.status(401).send({ status: false, message: "token must be present" })
 
-        jwt.verify(token, "secretkey", (err, user) => {
+        jwt.verify(token, "g66indmahraj", (err, user) => {
             if (err) { return res.status(403).send("invalid token") }
             req.userLoggedIn = user
         })

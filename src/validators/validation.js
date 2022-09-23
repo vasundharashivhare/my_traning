@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 
 const isvalidISBN=function(isbn){
-    return /^(97[8|9]-)(\d{10,13}+)/.test(isbn)
+    return /^(97[8|9]-)([0-9]{10,13}+)$/.test(isbn)
 }
 
 const isValidTitle = function (title) {
@@ -34,7 +34,7 @@ const isValidEmail=function(email){
 }
 
 const isLowerCase=function(name){
-    return /^([a-z.@]+)$/.test(name) //atoz
+    return /^([a-z.@\d]+)$/.test(name) //atoz
 } 
 
 const isValidSpace = function (value) {

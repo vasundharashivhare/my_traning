@@ -11,7 +11,7 @@ const createReview = async function (req, res) {
         if (!bookData) return res.status(400).send({ status: false, message: 'id not present in bookdata' })
 
         let requestBody = req.body
-        if (!isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'review data is required in body' })
+        if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'review data is required in body' })
         
         let {rating}=requestBody
         if (!v.isValidSpace(rating)) return res.status(400).send({ status: false, message: 'rating is mandatory' })
@@ -24,8 +24,7 @@ const createReview = async function (req, res) {
         let reviewData = await reviewModel.create(requestBody)
         if (reviewData) { var updateData = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $inc: { reviews: 1 } }, { new: true }).select({ __v: 0 }).lean() }
 
-        let reviewsData = await reviewModel.find({ bookId: bookData._id }).select({ __v: 0 })
-        updateData.reviewsData = reviewsData
+        updateData.reviewsData = reviewData
 
         return res.status(201).send({ status: true, message: 'Success', data: updateData })
     }
@@ -70,6 +69,9 @@ const deleteReview = async function (req, res) {
     try {
         let bookId = req.params.bookId
         let reviewId = req.params.reviewId
+        if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
+        if (!v.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: 'reviewId is not valid' })
+
 
         if (bookId) { var checkId = await bookModel.findOne({ _id: bookId, isDeleted: false }) }
         if (!bookId) return res.status(404).send({ status: false, message: "book Data not found" })

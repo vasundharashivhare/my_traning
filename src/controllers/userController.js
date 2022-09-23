@@ -9,7 +9,7 @@ const createUser = async function (req, res) {
         let requestBody = req.body
         let { title, name, phone, email, password, address } = requestBody
 
-        if (!(v.isvalidRequest(requestBody))) return res.status(400).send({ status: false, message: 'user data is required in body' })
+        if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'user data is required in body' })
 
         if ((Object.keys(requestBody).length > 6)) return res.status(400).send({ status: false, message: 'extra keys are not allowed' })
 

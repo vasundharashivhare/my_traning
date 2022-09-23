@@ -34,7 +34,7 @@ const isValidEmail=function(email){
 }
 
 const isLowerCase=function(name){
-    return /^([a-z]+)$/.test(name) //atoz
+    return /^([a-z.@]+)$/.test(name) //atoz
 } 
 
 const isValidSpace = function (value) {

@@ -5,9 +5,6 @@ const createBook = async function (req, res) {
     let requestBody = req.body
     let { title, excerpt, userId, ISBN, password, } = requestBody
 
-
-
-
     if (!requestBody) return res.status(400).send({ status: false, message: 'book data is required in body' })
     let bookData = await bookModel.create(requestBody)
     return res.status(201).send({ status: true, message: 'Success', data: bookData })
@@ -19,7 +16,7 @@ const getBook = async function (req, res) {
         let queries = req.query
         let { userId, category, subcategory } = queries
 
-        let filter = { isDeleted: false }//{s,c,id}
+        let filter = { isDeleted: false }
 
         if (subcategory) filter.subcategory = subcategory
         if (category) filter.category = category
@@ -37,12 +34,10 @@ const getBook = async function (req, res) {
 const getBookById = async function (req, res) {
     try {
         let bookId = req.params.bookId
-        let bookData = await bookModel.findById(bookId).select({ __v: 0 }).lean()
+        let bookData = await bookModel.findById(bookId).select({ __v: 0 }).lean() 
 
         let reviewsData = await reviewModel.find({ bookId: bookData._id })
         bookData.reviewsData = reviewsData
-
-        // let data=Object.create(bookData)
 
         return res.status(200).send({ status: true, message: 'Success', data: bookData })
     }
@@ -57,7 +52,6 @@ const updateBook = async function (req, res) {
         let queries = req.body
         let { title, excerpt, releasedAt, ISBN } = queries
         let filter = { isDeleted: false }
-
 
         if (ISBN) {
             let uniqueISBN = await bookModel.findOne({ ISBN: ISBN })

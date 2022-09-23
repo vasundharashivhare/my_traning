@@ -4,7 +4,7 @@ const route = require('./route/route')
 
 const app = express()
 app.use(express.json()) //bson
-const port = process.env.PORT || 3000
+const port = 3000
 mongoose.connect('mongodb+srv://prince9871:BZjeaWxY1uTLCefz@cluster0.pelsn1m.mongodb.net/group66Database', {
     useNewUrlParser: true
 })

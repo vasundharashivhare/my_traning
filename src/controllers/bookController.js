@@ -3,6 +3,11 @@ const reviewModel = require('../models/reviewModel')
 
 const createBook = async function (req, res) {
     let requestBody = req.body
+    let { title, excerpt, userId, ISBN, password, } = requestBody
+
+
+
+
     if (!requestBody) return res.status(400).send({ status: false, message: 'book data is required in body' })
     let bookData = await bookModel.create(requestBody)
     return res.status(201).send({ status: true, message: 'Success', data: bookData })

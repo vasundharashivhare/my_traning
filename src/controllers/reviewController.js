@@ -41,11 +41,10 @@ const updatereview = async function (req, res) {
 
         let checkId = await bookModel.findOne({ _id: bookId, isDeleted: false }).select({ __v: 0 }).lean()
         if (!checkId) return res.status(404).send({ status: false, message: "book Data not found" })
-        if (checkId) { var idOfReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, filter, { new: true }) }
+        if (checkId) { var idOfReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, filter, { new: true }).select({ __v: 0 }) }
         if (!idOfReview) return res.status(404).send({ status: false, message: " Data not found" })
 
-        const reviews = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ __v: 0 })
-        checkId.reviewsData = reviews
+           checkId.reviewsData = idOfReview
 
         return res.status(201).send({ status: true, message: "Updated Successfully", data: checkId })
     }
@@ -64,7 +63,7 @@ const deleteReview = async function (req, res) {
         if (!bookId) return res.status(404).send({ status: false, message: "book Data not found" })
         if (checkId) { var idOfReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true }) }
         if (!idOfReview) return res.status(404).send({ status: false, message: " Data not found" })
-        if (idOfReview)  await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true }) 
+        if (idOfReview)  await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true })
 
         return res.status(200).send({ status: true, message: "Deleted Successfully" })
     }

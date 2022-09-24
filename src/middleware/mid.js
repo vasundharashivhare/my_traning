@@ -20,25 +20,25 @@ let authentication = async function (req, res, next) {
 
 let authorisation = async function (req, res, next) {
     try {
-        let BookId = req.params.bookId
-        if (!v.isValidObjectId(BookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
-
-
-        if(!(await booksModel.findById(BookId))) return res.status(400).send({ status: false, message: 'BookId not exist' })
-
+        req.BookId = req.params.bookId
         let bodyUserId = req.body.userId
-        if (!BookId) {
+        if (!req.BookId) {
             if (req.userLoggedIn.userId != bodyUserId) return res.status(201).send({ status: false, message: 'Failed Authorisation' })
         }
-       
-        let book = await booksModel.findById(BookId)
-        if(!book) return res.status(400).send({ status: false, message: 'BookId not exist' })
-
-        if(BookId) { 
-        let userId = book.userId
-       
-        if (req.userLoggedIn.userId != userId) return res.status(403).send({ status: false, message: "User is unauthorised" })
-         } next()
+        
+        if(req.BookId) { 
+            if (!v.isValidObjectId(req.BookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
+            
+             req.book = await booksModel.findById(req.BookId)
+            if(!req.book) return res.status(400).send({ status: false, message: 'BookId not exist' })
+   
+            let userId = req.book.userId
+           
+            if (req.userLoggedIn.userId != userId) return res.status(403).send({ status: false, message: "User is unauthorised" })
+            
+            }
+        
+         next()
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })

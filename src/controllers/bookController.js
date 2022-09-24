@@ -77,9 +77,7 @@ const getBookById = async function (req, res) {
 
 const updateBook = async function (req, res) {
     try {
-        let bookId = req.params.bookId
-        if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
-      
+   
         let requestBody = req.body
         if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'give me some data to update' })
 
@@ -97,7 +95,7 @@ const updateBook = async function (req, res) {
         if (excerpt) filter.excerpt = excerpt
         if (releasedAt) filter.releasedAt = releasedAt
 
-        let updatedBook = await bookModel.findByIdAndUpdate({ _id: bookId }, filter, { new: true })
+        let updatedBook = await bookModel.findByIdAndUpdate({ _id: req.BookId }, filter, { new: true })
         return res.status(200).send({ status: true, message: 'Success', data: updatedBook })
     }
     catch (err) {
@@ -107,12 +105,8 @@ const updateBook = async function (req, res) {
 
 const deleteBook = async function (req, res) {
     try {
-        let bookId = req.params.bookId
-     //   if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
-
-        if (!(await bookModel.findById(bookId))) return res.status(404).send({ status: false, message: "enter correct bookid" })
-
-        let bookData = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { isDeleted: true, isDeletedAt: Date.now() }, { new: true })
+        
+        let bookData = await bookModel.findOneAndUpdate({ _id: req.BookId , isDeleted: false }, { isDeleted: true, isDeletedAt: Date.now() }, { new: true })
         if (!bookData) return res.status(404).send({ status: false, message: "Already deleted" })
         return res.status(200).send({ status: true, message: 'Successfully deleted'})
     } 

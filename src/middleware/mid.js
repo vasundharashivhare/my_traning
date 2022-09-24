@@ -23,6 +23,9 @@ let authorisation = async function (req, res, next) {
         req.BookId = req.params.bookId
         let bodyUserId = req.body.userId
         if (!req.BookId) {
+            if(!bodyUserId ) return res.status(201).send({ status: false, message: 'UserId is mandatory' })
+            if (!v.isValidObjectId(bodyUserId)) return res.status(400).send({ status: false, message: 'valid userId is mandatory' })
+
             if (req.userLoggedIn.userId != bodyUserId) return res.status(201).send({ status: false, message: 'Failed Authorisation' })
         }
         
@@ -30,7 +33,7 @@ let authorisation = async function (req, res, next) {
             if (!v.isValidObjectId(req.BookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
             
              req.book = await booksModel.findById(req.BookId)
-            if(!req.book) return res.status(400).send({ status: false, message: 'BookId not exist' })
+            if(!req.book) return res.status(404).send({ status: false, message: 'BookId not exist' })
    
             let userId = req.book.userId
            

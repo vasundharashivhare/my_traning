@@ -9,7 +9,7 @@ const bookSchema = new mongoose.Schema({
     category: { type: String, required: true },
     subcategory: { type: String, required: true },
     reviews: { type: Number, default: 0 },//comment: 'Holds number of reviews of this book' 
-    deletedAt: { type: Date },
+    deletedAt: { type: Date  },
     isDeleted: { type: Boolean, default: false },
     releasedAt: { type: Date, required: true } //, format("YYYY-MM-DD")
 

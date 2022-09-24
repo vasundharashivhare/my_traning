@@ -36,14 +36,19 @@ const createUser = async function (req, res) {
                 if (isUnique[0].email == email) {
                     return res.status(400).send({ status: false, message: "Email already exist" })
                 }
+            }else{
+                return res.status(400).send({ status: false, message: "phone and email already exist" })
             }
         }
 
         if (!v.isValidSpace(password)) return res.status(400).send({ status: false, message: 'password is mandatory' })
-        if (!v.isValidPassword(password)) return res.status(400).send({ status: false, message: 'Enter valid password' })
+        if (!v.isValidPassword(password)) return res.status(400).send({ status: false, message: 'Enter valid password and password length should be minimum 8-15 characters' })
         
         if (!v.isValidSpace(address)) return res.status(400).send({ status: false, message: 'address is mandatory' })
+        if (!(typeof address==='object'))return res.status(400).send({ status: false, message: 'address should be in object' })
+
         let { street, city, pincode } = address
+
         if (!v.isValidSpace(street)) return res.status(400).send({ status: false, message: 'street is mandatory' })
         if (!v.isValidSpace(city)) return res.status(400).send({ status: false, message: 'city is mandatory' })
 

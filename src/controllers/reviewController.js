@@ -68,16 +68,18 @@ const updatereview = async function (req, res) {
 const deleteReview = async function (req, res) {
     try {
         let bookId = req.params.bookId
+        if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'enter a valid bookId' })
+        if (bookId) { var bookData = await bookModel.findOne({ _id: bookId, isDeleted: false }) }
+        if (!bookData) return res.status(404).send({ status: false, message: "bookId not present in database enter validId" })
+        
         let reviewId = req.params.reviewId
-        if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
-        if (!v.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: 'reviewId is not valid' })
-
-
-        if (bookId) { var checkId = await bookModel.findOne({ _id: bookId, isDeleted: false }) }
-        if (!bookId) return res.status(404).send({ status: false, message: "book Data not found" })
-        if (checkId) { var idOfReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true }) }
-        if (!idOfReview) return res.status(404).send({ status: false, message: " Data not found" })
-        if (idOfReview)  await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true })
+        if (!v.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: 'enter a valid reviewId' })
+        if (reviewId) { var reviewData = await bookModel.findOne({ _id: reviewId, isDeleted: false }) }
+        if (!reviewData) return res.status(404).send({ status: false, message: "reviewId not present in database enter validId" })
+        
+        if (reviewData) { var updatedBookReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true }) }
+        if (!updatedBookReviewData) return res.status(404).send({ status: false, message: " Data Already Deleted" })
+        if (updatedBookReviewData)  await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true })
 
         return res.status(200).send({ status: true, message: "Deleted Successfully" })
     }

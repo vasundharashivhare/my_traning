@@ -40,7 +40,11 @@ const updatereview = async function (req, res) {
         let { bookId, reviewId } = req.params
         if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
         if (!v.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: 'reviewId is not valid' })
-
+       
+        if (bookId&&reviewId) { var bookData1 = await bookModel.findOne({ _id: reviewId, bookId:bookId }) 
+        if (!bookData1) return res.status(404).send({ status: false, message: "such data does not exist" })
+    }
+      
         let requestBody = req.body
         if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'give me some data to update' })
 
@@ -55,9 +59,11 @@ const updatereview = async function (req, res) {
         if (!bookData) return res.status(404).send({ status: false, message: "book Data not found" })
         if(bookData.isDeleted==true) return res.status(400).send({ status: false, message: 'book data is already deleted' })
 
-        if (bookData) { var updatedReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, filter, { new: true }).select({ __v: 0 }) }
+        if (bookData) { var updatedReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, filter, { new: true }).select({ __v: 0 })
+       
         if (!updatedReviewData) return res.status(404).send({ status: false, message: "review Data is already deleted" })
-
+    }
+        
         bookData.reviewsData = updatedReviewData
 
         return res.status(201).send({ status: true, message: "Updated Successfully", data: bookData })

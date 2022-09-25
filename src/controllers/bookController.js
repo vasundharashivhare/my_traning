@@ -2,6 +2,9 @@ const bookModel = require('../models/booksModel')
 const reviewModel = require('../models/reviewModel')
 const v = require('../validators/validation')
 
+
+
+//_______________________________________________________________createBook___________________________________________
 const createBook = async function (req, res) {
     try{
     let requestBody = req.body
@@ -37,12 +40,13 @@ const createBook = async function (req, res) {
 }
 
 
+//_________________________________________________________getBook_______________________________________________________
 const getBook = async function (req, res) {
     try {
         let queries = req.query
         let { userId, category, subcategory } = queries
 
-    // if (await bookModel.find())
+    
         let filter = { isDeleted: false }
 
         if (subcategory) filter.subcategory = subcategory
@@ -59,6 +63,8 @@ const getBook = async function (req, res) {
     }
 }
 
+
+//________________________________________________________________________________getBookById___________________________________________________
 const getBookById = async function (req, res) {
     try {
         let bookId = req.params.bookId
@@ -78,6 +84,8 @@ const getBookById = async function (req, res) {
     }
 }
 
+
+//________________________________________________________________________________UpdateBook______________________________________________________
 const updateBook = async function (req, res) {
     try {
    
@@ -85,8 +93,7 @@ const updateBook = async function (req, res) {
         if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'give me some data to update' })
       if(req.book.isDeleted==true) return res.status(400).send({ status: false, message: 'this book is deleted, so you cant update' })
      
-        //if(publicBookID.isDeleted==true) return res.status(200).send({ status: true, message: 'Book id already deleted' })
-
+       
         let { title, excerpt, releasedAt, ISBN } = requestBody
         
         let filter = { isDeleted: false }
@@ -119,6 +126,8 @@ const updateBook = async function (req, res) {
     }
 }
 
+
+//________________________________________________________________________deleteBook________________________________________________________________
 const deleteBook = async function (req, res) {
     try {
         

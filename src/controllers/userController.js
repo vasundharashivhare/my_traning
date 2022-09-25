@@ -89,7 +89,7 @@ const login = async function (req, res) {
         //token creation
         let token = jwt.sign({
             userId: userData._id.toString(),
-            iat: Math.floor(Date.now() / 1000) //date.now--in sec --math.floor-1.6--1
+            iat: Math.floor(Date.now() / 1000) 
         },
             "g66indmahraj",
             {expiresIn:"200m"}

@@ -9,9 +9,8 @@ let authentication = async function (req, res, next) {
 
         jwt.verify(token, "g66indmahraj", (err, user) => {
             if (err) { return res.status(401).send("invalid token") }
-            
             req.userLoggedIn = user
-            next()  
+            next()
 
         })
     }
@@ -25,27 +24,25 @@ let authorisation = async function (req, res, next) {
         req.BookId = req.params.bookId
         let bodyUserId = req.body.userId
         if (!req.BookId) {
-            if(!bodyUserId ) return res.status(201).send({ status: false, message: 'UserId is mandatory' })
+            if (!bodyUserId) return res.status(201).send({ status: false, message: 'UserId is mandatory' })
             if (!v.isValidObjectId(bodyUserId)) return res.status(400).send({ status: false, message: 'valid userId is mandatory' })
 
             if (req.userLoggedIn.userId != bodyUserId) return res.status(403).send({ status: false, message: 'Failed Authorisation Check Your Inputs' })
         }
-        
-        if(req.BookId) { 
+
+        if (req.BookId) {
             if (!v.isValidObjectId(req.BookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
-            
-             req.book = await booksModel.findOne({_id:req.BookId})
-             console.log(req.book)
-             console.log(req.userLoggedIn)
-            if(!req.book) return res.status(404).send({ status: false, message: 'BookId not exist' })
-   
+
+            req.book = await booksModel.findOne({ _id: req.BookId })
+            if (!req.book) return res.status(404).send({ status: false, message: 'BookId not exist' })
+
             let userId = req.book.userId
-           
+
             if (req.userLoggedIn.userId != userId) return res.status(403).send({ status: false, message: "User is unauthorised" })
-            
-            }
-        
-         next()
+
+        }
+
+        next()
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })

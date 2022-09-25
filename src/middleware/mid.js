@@ -8,10 +8,12 @@ let authentication = async function (req, res, next) {
         if (!token) return res.status(401).send({ status: false, message: "token must be present" })
 
         jwt.verify(token, "g66indmahraj", (err, user) => {
-            if (err) { return res.status(403).send("invalid token") }
+            if (err) { return res.status(401).send("invalid token") }
+            
             req.userLoggedIn = user
+            next()  
+
         })
-        next()
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })
@@ -32,7 +34,9 @@ let authorisation = async function (req, res, next) {
         if(req.BookId) { 
             if (!v.isValidObjectId(req.BookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
             
-             req.book = await booksModel.findById(req.BookId)
+             req.book = await booksModel.findOne({_id:req.BookId})
+             console.log(req.book)
+             console.log(req.userLoggedIn)
             if(!req.book) return res.status(404).send({ status: false, message: 'BookId not exist' })
    
             let userId = req.book.userId

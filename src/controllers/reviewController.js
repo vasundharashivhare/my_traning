@@ -84,7 +84,9 @@ const deleteReview = async function (req, res) {
         if (reviewData.isDeleted == true) return res.status(404).send({ status: false, message: "review already deleted" })
 
 
-        if (reviewData) { var updatedBookReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true }) }
+        if (reviewData) { var updatedBookReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true })
+    if(!updatedBookReviewData) return res.status(404).send({ status: false, message: "Bookid and review Id for same review is unmatched" })
+}
 
 
         if (updatedBookReviewData) await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true })

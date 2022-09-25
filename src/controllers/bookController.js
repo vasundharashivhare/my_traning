@@ -83,7 +83,7 @@ const updateBook = async function (req, res) {
    
         let requestBody = req.body
         if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'give me some data to update' })
-       if( await bookModel.find({isDeleted:true})) return res.status(404).send({ status: false, message: 'Book is already deleted' })
+      if(req.book.isDeleted==true) return res.status(400).send({ status: false, message: 'this book is deleted, so you cant update' })
      
         //if(publicBookID.isDeleted==true) return res.status(200).send({ status: true, message: 'Book id already deleted' })
 

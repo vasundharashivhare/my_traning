@@ -9,7 +9,7 @@ const createReview = async function (req, res) {
 
         let bookData = await bookModel.findById(bookId).select({ __v: 0 })
         if (!bookData) return res.status(404).send({ status: false, message: 'id not present in bookdata' })
-        if(bookData.isDeleted==true) return res.status(404).send({ status: false, message: 'book data is already deleted' })
+        if (bookData.isDeleted == true) return res.status(404).send({ status: false, message: 'book data is already deleted' })
 
         let requestBody = req.body
         if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'review data is required in body' })
@@ -40,11 +40,7 @@ const updatereview = async function (req, res) {
         let { bookId, reviewId } = req.params
         if (!v.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: 'bookId is not valid' })
         if (!v.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: 'reviewId is not valid' })
-       
-        if (bookId&&reviewId) { var bookData1 = await bookModel.findOne({ _id: reviewId, bookId:bookId }) 
-        if (!bookData1) return res.status(404).send({ status: false, message: "such data does not exist" })
-    }
-      
+
         let requestBody = req.body
         if (!v.isvalidRequest(requestBody)) return res.status(400).send({ status: false, message: 'give me some data to update' })
 
@@ -55,15 +51,17 @@ const updatereview = async function (req, res) {
         if (rating) filter.rating = rating
         if (review) filter.review = review
 
-        let bookData = await bookModel.findOne({ _id: bookId}).select({ __v: 0 }).lean()
+        let bookData = await bookModel.findOne({ _id: bookId }).select({ __v: 0 }).lean()
         if (!bookData) return res.status(404).send({ status: false, message: "book Data not found" })
-        if(bookData.isDeleted==true) return res.status(400).send({ status: false, message: 'book data is already deleted' })
+        if (bookData.isDeleted == true) return res.status(400).send({ status: false, message: 'book data is already deleted' })
+        let findReview = await reviewModel.findById(reviewId)
+        if (!findReview) return res.status(400).send({ status: false, messageg: "Review Not present in DataBase" })
+        if (findReview.bookId != bookData._id) return res.status(400).send({ status: false, message: "Book And Review Missmatch" })
+        if (findReview.isDeleted == true) return res.status(404).send({ status: false, message: "This Review Already Deleted" })
 
-        if (bookData) { var updatedReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, filter, { new: true }).select({ __v: 0 })
-       
-        if (!updatedReviewData) return res.status(404).send({ status: false, message: "review Data is already deleted" })
-    }
-        
+        if (bookData) { var updatedReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId }, filter, { new: true }).select({ __v: 0 }) }
+        // if (!updatedReviewData) return res.status(404).send({ status: false, message: "review Data is already deleted" })
+
         bookData.reviewsData = updatedReviewData
 
         return res.status(201).send({ status: true, message: "Updated Successfully", data: bookData })
@@ -90,9 +88,10 @@ const deleteReview = async function (req, res) {
         if (reviewData.isDeleted == true) return res.status(404).send({ status: false, message: "review already deleted" })
 
 
-        if (reviewData) { var updatedBookReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true })
-    if(!updatedBookReviewData) return res.status(404).send({ status: false, message: "Bookid and review Id for same review is unmatched" })
-}
+        if (reviewData) {
+            var updatedBookReviewData = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId, isDeleted: false }, { isDeleted: true, }, { new: true })
+            if (!updatedBookReviewData) return res.status(404).send({ status: false, message: "Bookid and review Id for same review is unmatched" })
+        }
 
 
         if (updatedBookReviewData) await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true })

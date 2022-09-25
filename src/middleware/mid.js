@@ -28,7 +28,7 @@ let authorisation = async function (req, res, next) {
             if(!bodyUserId ) return res.status(201).send({ status: false, message: 'UserId is mandatory' })
             if (!v.isValidObjectId(bodyUserId)) return res.status(400).send({ status: false, message: 'valid userId is mandatory' })
 
-            if (req.userLoggedIn.userId != bodyUserId) return res.status(201).send({ status: false, message: 'Failed Authorisation' })
+            if (req.userLoggedIn.userId != bodyUserId) return res.status(403).send({ status: false, message: 'Failed Authorisation Check Your Inputs' })
         }
         
         if(req.BookId) { 
